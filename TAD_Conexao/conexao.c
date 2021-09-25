@@ -6,18 +6,19 @@
 struct conexao
 {
     int distancia;
-    int cidades[2];
+    int origem;
+    int destino;
 };
 
-CONEXAO *conexao_criar(int distancia, int cidadeA, int cidadeB)
+CONEXAO *conexao_criar(int distancia, int origem, int destino)
 {
     CONEXAO *nova_conexao = (CONEXAO *)malloc(sizeof(CONEXAO));
 
     if (nova_conexao != NULL)
     {
         nova_conexao->distancia = distancia;
-        nova_conexao->cidades[0] = cidadeA;
-        nova_conexao->cidades[1] = cidadeB;
+        nova_conexao->origem = origem;
+        nova_conexao->destino = destino;
         return nova_conexao;
     }
     exit(1);
@@ -25,7 +26,7 @@ CONEXAO *conexao_criar(int distancia, int cidadeA, int cidadeB)
 
 void conexao_apagar(CONEXAO *conexao)
 {
-    if(conexao != NULL)
+    if (conexao != NULL)
         free(conexao);
 }
 
@@ -34,7 +35,12 @@ int conexao_get_distancia(CONEXAO *conexao)
     return conexao->distancia;
 }
 
-int *conexao_get_cidades(CONEXAO *conexao)
+int *conexao_get_origem(CONEXAO *conexao)
 {
-    return conexao->cidades;
+    return conexao->origem;
+}
+
+int *conexao_get_destino(CONEXAO *conexao)
+{
+    return conexao->destino;
 }
