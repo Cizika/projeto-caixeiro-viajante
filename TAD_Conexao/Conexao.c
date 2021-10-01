@@ -1,4 +1,4 @@
-#include "conexao.h"
+#include "Conexao.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,10 +24,10 @@ CONEXAO *conexao_criar(int distancia, int origem, int destino)
     exit(1);
 }
 
-void conexao_apagar(CONEXAO *conexao)
+void conexao_apagar(CONEXAO **conexao)
 {
     if (conexao != NULL)
-        free(conexao);
+        free(*conexao);
 }
 
 int conexao_get_distancia(CONEXAO *conexao)
@@ -35,12 +35,12 @@ int conexao_get_distancia(CONEXAO *conexao)
     return conexao->distancia;
 }
 
-int *conexao_get_origem(CONEXAO *conexao)
+int conexao_get_origem(CONEXAO *conexao)
 {
     return conexao->origem;
 }
 
-int *conexao_get_destino(CONEXAO *conexao)
+int conexao_get_destino(CONEXAO *conexao)
 {
     return conexao->destino;
 }
