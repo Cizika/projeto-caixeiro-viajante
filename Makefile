@@ -14,4 +14,4 @@ Main:
 	gcc -c main.c -I ./TAD_Conexao -I ./TAD_Lista
 
 clean:
-	rm *.o conexao
+	rm *.o pvc
