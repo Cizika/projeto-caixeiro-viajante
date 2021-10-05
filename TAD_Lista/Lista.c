@@ -1,14 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "Lista.h"
-#include "Conexao.h"
 
 struct no_ typedef NO;
 
 struct no_
 {
     NO *proximo;
-    CONEXAO *conexao;
+    CAMINHO *caminho;
 };
 
 struct lista_
@@ -31,16 +30,18 @@ LISTA *lista_criar(void)
 }
 
 // Insere uma conexão no fim da lista.
-int lista_inserir(LISTA *lista, CONEXAO *conexao)
+int lista_inserir(LISTA *lista, CAMINHO *caminho)
 {
-    if ((!lista_cheia(lista)) && (lista != NULL))
+    if (lista != NULL)
     {
         NO *pnovo = (NO *)malloc(sizeof(NO));
-        pnovo->conexao = conexao;
+        pnovo->caminho = caminho;
         if (lista->inicio == NULL)
-            lista->inicio = pnovo;
+        {
+          lista->inicio = pnovo;
+        }
         else
-            lista->fim->proximo = pnovo;
+          lista->fim->proximo = pnovo;
         pnovo->proximo = NULL;
         lista->fim = pnovo;
         lista->tamanho++;
@@ -51,14 +52,14 @@ int lista_inserir(LISTA *lista, CONEXAO *conexao)
 }
 
 // Insere uma conexão em determinada posição.
-int lista_inserir_posicao(LISTA *lista, int pos, CONEXAO *conexao)
+int lista_inserir_posicao(LISTA *lista, int pos, CAMINHO *caminho)
 {
     NO *pro = lista->inicio;
     NO *ant = NULL;
     if (lista != NULL && lista_tamanho(lista) > pos)
     {
         NO *pnovo = (NO *)malloc(sizeof(NO));
-        pnovo->conexao = conexao;
+        pnovo->caminho = caminho;
         for (int i = 0; i < pos; i++)
         {
             ant = pro;
@@ -81,7 +82,7 @@ void lista_apagar(LISTA **lista)
     {
         while (no_atual != NULL)
         {
-            conexao_apagar(&(no_atual->conexao));
+            caminho_apagar(no_atual->caminho);
             no_proximo = no_atual->proximo;
             free(no_atual);
             no_atual = no_proximo;
@@ -91,7 +92,7 @@ void lista_apagar(LISTA **lista)
 }
 
 // Busca por uma conexao
-CONEXAO *lista_busca(LISTA *lista, int origem, int destino)
+/*CAMINHO *lista_busca(LISTA *lista, int origem, int destino)
 {
     NO *no_atual = lista->inicio;
     if (lista != NULL)
@@ -105,9 +106,18 @@ CONEXAO *lista_busca(LISTA *lista, int origem, int destino)
         }
     }
     return NULL;
+}*/
+CAMINHO *lista_dequeue(LISTA *lista)
+{
+  lista->tamanho--;
+  NO *noh = lista->inicio;
+  CAMINHO *first = noh->caminho;
+  lista->inicio = lista->inicio->proximo;
+  free(noh);
+  return first;
 }
-
 // Remove conexão no final da lista
+/*
 int lista_remover(LISTA *lista, int destino, int origem)
 {
     if (lista != NULL)
@@ -140,7 +150,7 @@ int lista_remover(LISTA *lista, int destino, int origem)
         }
     }
     return 0;
-}
+}*/
 
 // Verifica se a lista está cheia
 int lista_cheia(LISTA *lista)
@@ -161,6 +171,11 @@ int lista_tamanho(LISTA *lista)
     return lista->tamanho;
 }
 
+int empty_list(LISTA *lista)
+{
+  if(lista->inicio==NULL) return 1;
+  return 0;
+}
 // Verifica se a lista está vazia
 int lista_vazia(LISTA *lista)
 {
