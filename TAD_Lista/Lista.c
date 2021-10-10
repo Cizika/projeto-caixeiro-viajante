@@ -109,11 +109,11 @@ void lista_apagar(LISTA **lista)
 }*/
 CAMINHO *lista_dequeue(LISTA *lista)
 {
-  lista->tamanho--;
-  NO *noh = lista->inicio;
-  CAMINHO *first = noh->caminho;
+  NO *no = lista->inicio;
+  CAMINHO *first = no->caminho;
   lista->inicio = lista->inicio->proximo;
-  free(noh);
+  free(no);
+  lista->tamanho--;
   return first;
 }
 // Remove conexão no final da lista
@@ -179,5 +179,5 @@ int empty_list(LISTA *lista)
 // Verifica se a lista está vazia
 int lista_vazia(LISTA *lista)
 {
-    return ((lista != NULL) ? lista->tamanho <= 0 : ERRO);
+    return (lista->inicio == NULL);
 }

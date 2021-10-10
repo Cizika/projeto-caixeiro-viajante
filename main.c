@@ -1,98 +1,112 @@
-/* 
- * File:   main.c
- *
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "TAD_Conexao/Conexao.h"
-#include "TAD_Lista/Lista.h"
+// #include "TAD_Lista/Lista.h"
+#include "TAD_Pilha/Pilha.h"
 
-/*
- * 
- */
-int main(int argc, char** argv) {
+void calcular_caminho(CONEXAO **conexoes, PILHA *caminhos, int n_conexoes, int n_cidades, int cidade_inicial);
+int dist_menor = -1;
+PILHA *melhor_caminho = NULL;
 
-  //declaraçoes
-  int n_cidades;
-  int n_conexoes= 0;
+int main()
+{
+  int cidade_a, cidade_b, distancia, n_cidades, n_conexoes = 0;
+
   scanf(" %i", &n_cidades);
-  CONEXAO **conexoes = (CONEXAO**)malloc(6*sizeof(CONEXAO*));
-  int a,b,dist;
-  printf(".\n");
-  CONEXAO* con;
-  for(int i=0;i<6;i++)
+
+  CONEXAO **conexoes = (CONEXAO **)malloc(6 * sizeof(CONEXAO *));
+
+  // Tornar independente
+  for (int i = 0; i < 6; i++)
   {
+    scanf(" %i %i %i", &cidade_a, &cidade_b, &distancia);
+    conexoes[i] = conexao_criar(distancia, cidade_a, cidade_b);
     n_conexoes++;
-    scanf(" %i %i %i", &a, &b, &dist);
-    con = conexao_criar(dist, a, b);
-    printf("$ %i %i %i\n", conexao_get_origem(con), conexao_get_destino(con), conexao_get_distancia(con));
-    conexao_lista_add(conexoes,con,n_conexoes);
-  }
-  printf("%i.\n",n_conexoes);
-  for(int i=0;i<6;i++)
-  {
-    printf(" %i %i %i\n", conexao_get_origem(conexoes[i]), conexao_get_destino(conexoes[i]), conexao_get_distancia(conexoes[i]));
-  }
-  printf(".\n");
-  LISTA *lista = lista_criar();
-  LISTA *validos = lista_criar();
-  int *visitados = (int*)malloc(n_cidades*sizeof(int));
-  for(int i=0;i<n_cidades;i++)
-  {
-    visitados[i] = -1;
-  }
-  printf(".\n");
-  CAMINHO *caminho = caminho_criar(1, 0,visitados, 0);
-  CAMINHO *filho;
-  lista_inserir(lista, caminho);
-  do
-  {
-    caminho = lista_dequeue(lista);
-    printf("Abrindo caminho\n");
-    print_caminho(caminho);
-    caminho_visitar(caminho);
-    for(int i=0;i<n_conexoes;i++)
-    {
-      if(conexao_get_origem(conexoes[i])==caminho_get_atual(caminho) && !caminho_visitado(caminho,conexao_get_destino(conexoes[i])))
-      {
-        filho = caminho_criar(conexao_get_destino(conexoes[i]),caminho_get_distancia(caminho)+conexao_get_distancia(conexoes[i]),caminho_get_visitados(caminho),caminho_get_tamanho(caminho));
-        lista_inserir(lista,filho);
-        printf("\tConexao em %i\n\t",conexao_get_destino(conexoes[i]));
-        print_caminho(filho);
-      }
-      if(conexao_get_destino(conexoes[i])==caminho_get_atual(caminho) && !caminho_visitado(caminho,conexao_get_origem(conexoes[i])))
-      {
-        filho = caminho_criar(conexao_get_origem(conexoes[i]),caminho_get_distancia(caminho)+conexao_get_distancia(conexoes[i]),caminho_get_visitados(caminho),caminho_get_tamanho(caminho));
-        lista_inserir(lista,filho);
-        printf("\tConexao em %i\n\t",conexao_get_origem(conexoes[i]));
-        print_caminho(filho);
-      }
-      if(conexao_get_origem(conexoes[i])==caminho_get_atual(caminho) && (caminho_get_tamanho(caminho)==n_cidades && conexao_get_destino(conexoes[i]) == 1))
-      {
-        filho = caminho_criar(conexao_get_destino(conexoes[i]),caminho_get_distancia(caminho)+conexao_get_distancia(conexoes[i]),caminho_get_visitados(caminho),caminho_get_tamanho(caminho));
-        lista_inserir(validos,filho);
-        print_caminho(filho);
-      }
-      if(conexao_get_destino(conexoes[i])==caminho_get_atual(caminho) && (caminho_get_tamanho(caminho)==n_cidades && conexao_get_origem(conexoes[i]) == 1))
-      {
-        filho = caminho_criar(conexao_get_origem(conexoes[i]),caminho_get_distancia(caminho)+conexao_get_distancia(conexoes[i]),caminho_get_visitados(caminho),caminho_get_tamanho(caminho));
-        lista_inserir(validos,filho);
-        print_caminho(filho);
-      }
-    }
-    caminho_apagar(caminho);
-  }while(!empty_list(lista));
-
-  printf("\n\n");
-  while(!empty_list(validos))
-  {
-    caminho = lista_dequeue(validos);
-    for(int i=0;i<=n_cidades;i++) printf("%i ",caminho_get_visitados(caminho)[i]);
-    printf("| %i",caminho_get_distancia(caminho));
-    printf("\n");
   }
 
-    return (EXIT_SUCCESS);
+  PILHA *caminhos = pilha_criar();
+  int cidade_inicial = conexao_get_origem(conexoes[0]);
+  pilha_empilhar(caminhos, caminho_criar(cidade_inicial, 0));
+
+  // Encontrando o melhor caminho (menor distância)
+  calcular_caminho(conexoes, caminhos, n_conexoes, n_cidades, cidade_inicial);
+
+  // Invertendo a pilha do melhor caminho
+  pilha_inverter(melhor_caminho);
+
+  printf("%i\n", cidade_inicial);
+  pilha_print(melhor_caminho);
+  printf("\n%i\n", dist_menor);
+
+  for (int i = 0; i < 6; i++)
+    conexao_apagar(conexoes[i]);
+  free(conexoes);
+
+  pilha_apagar(&melhor_caminho);
+  pilha_apagar(&caminhos);
+
+  return (EXIT_SUCCESS);
 }
 
+void calcular_caminho(CONEXAO **conexoes, PILHA *caminhos, int n_conexoes, int n_cidades, int cidade_inicial)
+{
+  CAMINHO *caminho_atual = pilha_topo(caminhos);
+  int cidade_atual = caminho_get_cidade_atual(caminho_atual);
+  int distancia_total = caminho_get_distancia(caminho_atual);
+  int p_tamanho = pilha_tamanho(caminhos);
+
+  // Condição de parada => verifica se retornou à cidade de início da viagem
+  if (cidade_atual == cidade_inicial && distancia_total != 0 && p_tamanho == n_cidades + 1)
+  {
+    if (dist_menor == -1 || distancia_total < dist_menor)
+    {
+      melhor_caminho = pilha_copiar(caminhos);
+      dist_menor = distancia_total;
+    }
+    return;
+  }
+
+  // Iterando pelas conexões correspondentes
+  for (int i = 0; i < n_conexoes; i++)
+  {
+    int origem = conexao_get_origem(conexoes[i]);
+    int destino = conexao_get_destino(conexoes[i]);
+    int distancia_somada = conexao_get_distancia(conexoes[i]) + distancia_total;
+
+    // Verificando se a cidade atual está na origem da conexão e se seu destino ainda não foi visitado
+    if (cidade_atual == origem && !caminho_visitado(caminhos, destino))
+    {
+      pilha_empilhar(caminhos, caminho_criar(destino, distancia_somada));
+      calcular_caminho(conexoes, caminhos, n_conexoes, n_cidades, cidade_inicial);
+      CAMINHO *caminho = pilha_desempilhar(caminhos);
+      caminho_apagar(&caminho);
+    }
+
+    // Verificando se a cidade atual está no destino da conexão e se sua origem ainda não foi visitada
+    if (cidade_atual == destino && !caminho_visitado(caminhos, origem))
+    {
+      pilha_empilhar(caminhos, caminho_criar(origem, distancia_somada));
+      calcular_caminho(conexoes, caminhos, n_conexoes, n_cidades, cidade_inicial);
+      CAMINHO *caminho = pilha_desempilhar(caminhos);
+      caminho_apagar(&caminho);
+    }
+
+    // Verificando se a origem da conexão é novamente a cidade de início (Último caminho a ser adicionado)
+    if (cidade_atual == origem && destino == cidade_inicial && pilha_tamanho(caminhos) == n_cidades)
+    {
+      pilha_empilhar(caminhos, caminho_criar(destino, distancia_somada));
+      calcular_caminho(conexoes, caminhos, n_conexoes, n_cidades, cidade_inicial);
+      CAMINHO *caminho = pilha_desempilhar(caminhos);
+      caminho_apagar(&caminho);
+    }
+
+    // Verificando se o destino da conexão é novamente a cidade de início (Último caminho a ser adicionado)
+    if (cidade_atual == destino && origem == cidade_inicial && pilha_tamanho(caminhos) == n_cidades)
+    {
+      pilha_empilhar(caminhos, caminho_criar(origem, distancia_somada));
+      calcular_caminho(conexoes, caminhos, n_conexoes, n_cidades, cidade_inicial);
+      CAMINHO *caminho = pilha_desempilhar(caminhos);
+      caminho_apagar(&caminho);
+    }
+  }
+}
