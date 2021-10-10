@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "TAD_Conexao/Conexao.h"
-// #include "TAD_Lista/Lista.h"
 #include "TAD_Pilha/Pilha.h"
 
 void calcular_caminho(CONEXAO **conexoes, PILHA *caminhos, int n_conexoes, int n_cidades, int cidade_inicial);

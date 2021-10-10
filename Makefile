@@ -2,7 +2,7 @@ all: caminho.o conexao.o pilha.o Main
 	gcc -g main.o caminho.o conexao.o pilha.o -o pvc -std=c99 -pedantic-errors -Wall -lm
 
 run: 
-	valgrind --leak-check=full ./pvc < teste.in
+	./pvc < ./Tests/Teste1.in > ./T
 
 pilha.o:
 	gcc -g -c ./TAD_Pilha/Pilha.c -o pilha.o -I ./TAD_Caminho
