@@ -5,35 +5,43 @@
 
 struct caminho
 {
-  int cidade_atual;
+  unsigned int ultima_cidade;
   int distancia_total;
 };
 
-CAMINHO *caminho_criar(int cidade_inicial, int distancia_total)
+// Cria um novo Caminho em memória com os argumentos passados
+CAMINHO *caminho_criar(unsigned int ultima_cidade, int distancia_total)
 {
   CAMINHO *novo_caminho = (CAMINHO *)malloc(sizeof(CAMINHO));
-
   if (novo_caminho != NULL)
   {
-    novo_caminho->cidade_atual = cidade_inicial;
+    novo_caminho->ultima_cidade = ultima_cidade;
     novo_caminho->distancia_total = distancia_total;
-    return novo_caminho;
   }
-  exit(1);
+  return novo_caminho;
 }
 
+// Apaga um Caminho da memória
 void caminho_apagar(CAMINHO **caminho)
 {
   if (*caminho != NULL)
     free(*caminho);
 }
 
-int caminho_get_cidade_atual(CAMINHO *caminho)
+// Retorna a cidade atual de um Caminho
+unsigned int caminho_get_ultima_cidade(CAMINHO *caminho)
 {
-  return caminho->cidade_atual;
+  return caminho->ultima_cidade;
 }
 
-int caminho_get_distancia(CAMINHO *caminho)
+// Retorna a distância total até a última cidade de um caminho
+int caminho_get_distancia_total(CAMINHO *caminho)
 {
   return caminho->distancia_total;
+}
+
+// Imprime a última cidade do Caminho na saída padrão 
+void caminho_print_ultima_cidade(CAMINHO *caminho)
+{
+  printf("-%i", caminho_get_ultima_cidade(caminho));
 }

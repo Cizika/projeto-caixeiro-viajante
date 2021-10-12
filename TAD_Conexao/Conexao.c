@@ -6,11 +6,12 @@
 struct conexao
 {
     int distancia;
-    int origem;
-    int destino;
+    unsigned int origem;
+    unsigned int destino;
 };
 
-CONEXAO *conexao_criar(int distancia, int origem, int destino)
+// Cria uma nova Conexão em memória com os argumentos passados
+CONEXAO *conexao_criar(int distancia, unsigned int origem, unsigned int destino)
 {
     CONEXAO *nova_conexao = (CONEXAO *)malloc(sizeof(CONEXAO));
 
@@ -19,28 +20,31 @@ CONEXAO *conexao_criar(int distancia, int origem, int destino)
         nova_conexao->distancia = distancia;
         nova_conexao->origem = origem;
         nova_conexao->destino = destino;
-        return nova_conexao;
     }
-    exit(1);
+    return nova_conexao;
 }
 
-void conexao_apagar(CONEXAO *conexao)
+// Apaga uma Conexão da memória
+void conexao_apagar(CONEXAO **conexao)
 {
-    if (conexao != NULL)
-        free(conexao);
+    if (*conexao != NULL)
+        free(*conexao);
 }
 
+// Retorna a distância de uma Conexão
 int conexao_get_distancia(CONEXAO *conexao)
 {
     return conexao->distancia;
 }
 
-int conexao_get_origem(CONEXAO *conexao)
+// Retorna a cidade origem de uma Conexão
+unsigned int conexao_get_origem(CONEXAO *conexao)
 {
     return conexao->origem;
 }
 
-int conexao_get_destino(CONEXAO *conexao)
+// Retorna a cidade destino de uma Conexão
+unsigned int conexao_get_destino(CONEXAO *conexao)
 {
     return conexao->destino;
 }
