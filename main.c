@@ -17,7 +17,7 @@ int main()
   // Criando vetor com todas as Conexões do Problema
   CONEXAO **conexoes = (CONEXAO **)malloc(6 * sizeof(CONEXAO *));
 
-  // TODO: Tornar independente do número de conexões (BREAK)
+  // TODO: Tornar independente do número de conexões (EOF) => LISTA ENCADEADA
   for (int i = 0; i < 6; i++)
   {
     scanf(" %i %i %i", &cidade_a, &cidade_b, &distancia);
