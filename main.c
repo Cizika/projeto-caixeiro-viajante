@@ -8,6 +8,9 @@ void calcular_caminho(CONEXAO **conexoes, PILHA *caminhos, unsigned int n_conexo
 int dist_menor = -1;
 PILHA *melhor_caminho = NULL;
 
+// TODO: Arrumar vazamento da Pilha
+// TODO: Implementar TAD Lista Encadeada
+
 int main()
 {
   unsigned int cidade_a, cidade_b, distancia, n_cidades, n_conexoes = 0;
@@ -25,6 +28,8 @@ int main()
     n_conexoes++;
   }
 
+  // TODO: INÍCIO ANÁLISE EXPERIMENTAL
+
   // Criando Pilha de Caminhos para testar todas as possibilidades (Força bruta)
   PILHA *caminhos = pilha_criar();
 
@@ -34,6 +39,8 @@ int main()
 
   // Encontrando o melhor caminho (menor distância)
   calcular_caminho(conexoes, caminhos, n_conexoes, n_cidades, cidade_inicial);
+
+  // FIM ANÁLISE EXPERIMENTAL
 
   // Invertendo a pilha do melhor caminho
   pilha_inverter(melhor_caminho);
