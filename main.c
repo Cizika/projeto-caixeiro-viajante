@@ -76,6 +76,9 @@ void calcular_caminho(CONEXAO **conexoes, PILHA *caminhos, unsigned int n_conexo
   {
     if (dist_menor == -1 || distancia_total < dist_menor)
     {
+      if (melhor_caminho != NULL)
+        pilha_apagar(&melhor_caminho);
+
       melhor_caminho = pilha_copiar(caminhos);
       dist_menor = distancia_total;
     }
