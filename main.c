@@ -1,15 +1,13 @@
 #include "TAD_Conexao/Conexao.h"
 #include "TAD_Pilha/Pilha.h"
+#include "TAD_Lista/Lista.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-void calcular_caminho(CONEXAO **conexoes, PILHA *caminhos, unsigned int n_conexoes, unsigned int n_cidades, unsigned int cidade_inicial);
+void calcular_caminho(LISTA *conexoes, PILHA *caminhos, unsigned int n_conexoes, unsigned int n_cidades, unsigned int cidade_inicial);
 int dist_menor = -1;
 PILHA *melhor_caminho = NULL;
-
-// TODO: Arrumar vazamento da Pilha
-// TODO: Implementar TAD Lista Encadeada
 
 int main()
 {
@@ -17,14 +15,13 @@ int main()
 
   scanf(" %i", &n_cidades);
 
-  // Criando vetor com todas as Conexões do Problema
-  CONEXAO **conexoes = (CONEXAO **)malloc(6 * sizeof(CONEXAO *));
+  // Criando lista com todas as Conexões do Problema
+  LISTA *conexoes = lista_criar();
 
-  // TODO: Tornar independente do número de conexões (EOF) => LISTA ENCADEADA
-  for (int i = 0; i < 6; i++)
+  // Lendo as conexões até encontrar um EOF
+  while (scanf(" %i %i %i", &cidade_a, &cidade_b, &distancia) != EOF)
   {
-    scanf(" %i %i %i", &cidade_a, &cidade_b, &distancia);
-    conexoes[i] = conexao_criar(distancia, cidade_a, cidade_b);
+    lista_inserir(conexoes, conexao_criar(distancia, cidade_a, cidade_b));
     n_conexoes++;
   }
 
@@ -34,7 +31,7 @@ int main()
   PILHA *caminhos = pilha_criar();
 
   // Armazenando a cidade de origem do problema na Pilha
-  unsigned int cidade_inicial = conexao_get_origem(conexoes[0]);
+  unsigned int cidade_inicial = conexao_get_origem(lista_get_conexao(conexoes, 0));
   pilha_empilhar(caminhos, caminho_criar(cidade_inicial, 0));
 
   // Encontrando o melhor caminho (menor distância)
@@ -55,16 +52,14 @@ int main()
   printf("\n%i\n", dist_menor);
 
   // Desalocando memória Heap
-  for (int i = 0; i < 6; i++)
-    conexao_apagar(&(conexoes[i]));
-  free(conexoes);
+  lista_apagar(&conexoes);
   pilha_apagar(&melhor_caminho);
   pilha_apagar(&caminhos);
 
   return (EXIT_SUCCESS);
 }
 
-void calcular_caminho(CONEXAO **conexoes, PILHA *caminhos, unsigned int n_conexoes, unsigned int n_cidades, unsigned int cidade_inicial)
+void calcular_caminho(LISTA *conexoes, PILHA *caminhos, unsigned int n_conexoes, unsigned int n_cidades, unsigned int cidade_inicial)
 {
   CAMINHO *caminho_atual = pilha_topo(caminhos);
   unsigned int cidade_atual = caminho_get_ultima_cidade(caminho_atual);
@@ -88,9 +83,9 @@ void calcular_caminho(CONEXAO **conexoes, PILHA *caminhos, unsigned int n_conexo
   // Iterando pelas conexões correspondentes
   for (int i = 0; i < n_conexoes; i++)
   {
-    unsigned int origem = conexao_get_origem(conexoes[i]);
-    unsigned int destino = conexao_get_destino(conexoes[i]);
-    int distancia_somada = conexao_get_distancia(conexoes[i]) + distancia_total;
+    unsigned int origem = conexao_get_origem(lista_get_conexao(conexoes, i));
+    unsigned int destino = conexao_get_destino(lista_get_conexao(conexoes, i));
+    int distancia_somada = conexao_get_distancia(lista_get_conexao(conexoes, i)) + distancia_total;
 
     // Verificando se a cidade atual está na origem da conexão e se seu destino ainda não foi visitado
     if (cidade_atual == origem && !caminho_visitado(caminhos, destino))
