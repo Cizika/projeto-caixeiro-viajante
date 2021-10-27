@@ -1,11 +1,11 @@
 all: conexao.o caminho.o lista_conexoes.o lista_caminhos.o Main
-	gcc -g main.o caminho.o conexao.o lista_caminhos.o lista_conexoes.o -o PVC -std=c99 -pedantic-errors -Wall -lm
+	gcc -g main.o caminho.o conexao.o lista_caminhos.o lista_conexoes.o -o PCV -std=c99 -pedantic-errors -Wall -lm
 
 run: 
-	./PVC
+	./PCV
 
 test: 
-	valgrind --leak-check=full --show-leak-kinds=all ./PVC < ./Tests/Teste06.in > ./Tests/Teste06.out
+	valgrind --leak-check=full --show-leak-kinds=all ./PCV < ./Tests/Teste06.in > ./Tests/Teste06.out
 
 caminho.o:
 	gcc -g -c ./TAD_Caminho/Caminho.c -o caminho.o
@@ -23,4 +23,4 @@ Main:
 	gcc -g -c main.c -I ./TAD_Conexao -I ./TAD_Caminho
 
 clean:
-	rm *.o PVC
+	rm *.o PCV
