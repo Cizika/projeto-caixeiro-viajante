@@ -107,7 +107,7 @@ unsigned int caminhos_remover(CAMINHOS *lista) // 15(n_cidades) + 24 (função c
 }
 
 // Busca iterativamente por uma cidade na lista de caminhos
-BOOLEAN caminhos_visitado(CAMINHOS *lista, unsigned int cidade)
+BOOLEAN caminhos_visitado(CAMINHOS *lista, unsigned int cidade) // 12(n_cidades) + 5 (função caminhos_visitado)
 {
     NO *no_atual = lista->inicio; // 3 operações primitivas (atribuição, referência de ponteiro e operador seta)
     if (lista != NULL) // 2 operações primitivas (condição e comparação)

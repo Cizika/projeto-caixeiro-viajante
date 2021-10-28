@@ -5,7 +5,7 @@ run:
 	./PCV
 
 test: 
-	valgrind --leak-check=full --show-leak-kinds=all ./PCV < ./Tests/Teste06.in > ./Tests/Teste06.out
+	valgrind --leak-check=full --show-leak-kinds=all ./PCV < ./Tests/Teste10.in > ./Tests/Teste10.out
 
 caminho.o:
 	gcc -g -c ./TAD_Caminho/Caminho.c -o caminho.o
